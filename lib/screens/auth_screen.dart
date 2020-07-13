@@ -93,9 +93,8 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
-
-
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
@@ -104,9 +103,30 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
+  AnimationController _animateController;
+  Animation<Size> _heightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animateController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+
+    _heightAnimation = Tween<Size>(
+      begin: Size(double.infinity, 260),
+      end: Size(double.infinity, 320),
+    ).animate(
+      CurvedAnimation(parent: _animateController, curve: Curves.fastOutSlowIn),
+    );
+  }
 
 
-
+  @override
+  void dispose(){
+    super.dispose();
+    _animateController.dispose();
+  }
 
   // Funtion submit
   Future<void> _submit(BuildContext context) async {
@@ -132,30 +152,27 @@ class _AuthCardState extends State<AuthCard> {
           _authData['password'],
         );
       }
-    } on HttpException catch(error){
-
+    } on HttpException catch (error) {
       // Error login
       var errorMessage = "Auth failed.";
-      if(error.toString() == "EMAIL_NOT_FOUND"){
+      if (error.toString() == "EMAIL_NOT_FOUND") {
         errorMessage = "Email Tidak terdaftar";
-      }else if(error.toString() == "INVALID_PASSWORD"){
+      } else if (error.toString() == "INVALID_PASSWORD") {
         errorMessage = "Password Salah";
-      }else if(error.toString() == "USER_DISABLED"){
+      } else if (error.toString() == "USER_DISABLED") {
         errorMessage = "User disabled";
       }
 
-
       // Error signup
-      if(error.toString() == "EMAIL_EXISTS"){
+      if (error.toString() == "EMAIL_EXISTS") {
         errorMessage = "Email telah didaftarkan";
-      }else if(error.toString() == "OPERATION_NOT_ALLOWED"){
+      } else if (error.toString() == "OPERATION_NOT_ALLOWED") {
         errorMessage = "Operasi tidak boleh dilakukan";
-      }else if(error.toString() == "TOO_MANY_ATTEMPTS_TRY_LATER"){
-        errorMessage = "Terlalu banyak mencoba. Silahkan ulangi beberapa saat lagi";
+      } else if (error.toString() == "TOO_MANY_ATTEMPTS_TRY_LATER") {
+        errorMessage =
+            "Terlalu banyak mencoba. Silahkan ulangi beberapa saat lagi";
       }
-      _alertAuth(context, errorMessage );
-
-
+      _alertAuth(context, errorMessage);
     } catch (error) {
       _alertAuth(context, error.toString());
     }
@@ -164,26 +181,27 @@ class _AuthCardState extends State<AuthCard> {
     });
   }
 
-
-
-
   // switch mode login / signup
   void _switchAuthMode() {
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
+        _animateController.forward();
       });
     } else {
       setState(() {
         _authMode = AuthMode.Login;
+        _animateController.reverse();
       });
     }
+    _animateController.addListener(()=> setState((){}) );
   }
 
-
   // jika ada error saat auth
-  void _alertAuth(BuildContext context, String message){
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(message),));
+  void _alertAuth(BuildContext context, String message) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
   }
 
   @override
@@ -195,9 +213,9 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _heightAnimation.value.height,
         constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+            BoxConstraints(minHeight: _heightAnimation.value.height),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -252,9 +270,9 @@ class _AuthCardState extends State<AuthCard> {
                   RaisedButton(
                     child:
                         Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
-                    onPressed: (){
+                    onPressed: () {
                       _submit(context);
-                    } ,
+                    },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
