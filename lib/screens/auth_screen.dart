@@ -103,29 +103,29 @@ class _AuthCardState extends State<AuthCard>
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
-  AnimationController _animateController;
-  Animation<Size> _heightAnimation;
+  // AnimationController _animateController;
+  // Animation<Size> _heightAnimation;
 
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    _animateController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+  //   _animateController =
+  //       AnimationController(vsync: this, duration: Duration(milliseconds: 300));
 
-    _heightAnimation = Tween<Size>(
-      begin: Size(double.infinity, 260),
-      end: Size(double.infinity, 320),
-    ).animate(
-      CurvedAnimation(parent: _animateController, curve: Curves.fastOutSlowIn),
-    );
-  }
+  //   _heightAnimation = Tween<Size>(
+  //     begin: Size(double.infinity, 260),
+  //     end: Size(double.infinity, 320),
+  //   ).animate(
+  //     CurvedAnimation(parent: _animateController, curve: Curves.fastOutSlowIn),
+  //   );
+  // }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _animateController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _animateController.dispose();
+  // }
 
   // Funtion submit
   Future<void> _submit(BuildContext context) async {
@@ -185,12 +185,12 @@ class _AuthCardState extends State<AuthCard>
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
-        _animateController.forward();
+        //_animateController.forward();
       });
     } else {
       setState(() {
         _authMode = AuthMode.Login;
-        _animateController.reverse();
+        //_animateController.reverse();
       });
     }
   }
@@ -212,18 +212,19 @@ class _AuthCardState extends State<AuthCard>
       elevation: 8.0,
 
       /*
-      * Animated builder
-      * Passing widget child AnimatedBuilder ke child builder()
+      * Animated Container 
+      * biasanya ditempatkan pada penganimasian hal-hal yang sederhana seperti 
+      * menganimasikan ketinggian seperti ini
       */
-      child: AnimatedBuilder(
-        animation: _heightAnimation,
-        builder: (ctx, chBuilder) => Container(
-          height: _heightAnimation.value.height,
-          constraints: BoxConstraints(minHeight: _heightAnimation.value.height),
-          width: deviceSize.width * 0.75,
-          padding: EdgeInsets.all(16.0),
-          child: chBuilder,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 600),
+        curve: Curves.easeIn,
+        height: _authMode == AuthMode.Signup ? 320 : 260,
+        constraints: BoxConstraints(
+          minHeight: _authMode == AuthMode.Signup ? 320 : 260,
         ),
+        width: deviceSize.width * 0.75,
+        padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
