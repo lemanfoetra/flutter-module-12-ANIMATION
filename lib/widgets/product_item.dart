@@ -38,20 +38,11 @@ class ProductItem extends StatelessWidget {
                   width: 0.3,
                 ),
               ),
-              child: Image.network(
-                dataProduct.imageUrl,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes
-                          : null,
-                    ),
-                  );
-                },
+              child: FadeInImage(
+                placeholder: AssetImage('assets/images/placeholder-image.png'),
+                image: NetworkImage(
+                  dataProduct.imageUrl,
+                ),
                 fit: BoxFit.cover,
               ),
             ),
