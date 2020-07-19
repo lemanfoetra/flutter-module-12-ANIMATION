@@ -18,14 +18,16 @@ class ProductDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-
             // Gambar Produk
             Container(
               height: 250,
               width: double.infinity,
-              child: Image.network(
-                dataProduct.imageUrl,
-                fit: BoxFit.cover,
+              child: Hero(
+                tag: dataProduct.id,
+                child: Image.network(
+                  dataProduct.imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
 
@@ -36,17 +38,15 @@ class ProductDetailScreen extends StatelessWidget {
             // Harga Produk
             Text(
               "\$${dataProduct.price}",
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 20
-              ),
+              style: TextStyle(color: Colors.grey, fontSize: 20),
             ),
 
             SizedBox(height: 10),
 
-
             // Deskripsi Produk
-            Text(dataProduct.description,)
+            Text(
+              dataProduct.description,
+            )
           ],
         ),
       ),
