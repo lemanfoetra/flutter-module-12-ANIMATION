@@ -12,43 +12,53 @@ class ProductDetailScreen extends StatelessWidget {
         Provider.of<ProductsProvider>(context).findById(productId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(dataProduct.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            // Gambar Produk
-            Container(
-              height: 250,
-              width: double.infinity,
-              child: Hero(
-                tag: dataProduct.id,
-                child: Image.network(
-                  dataProduct.imageUrl,
-                  fit: BoxFit.cover,
+      // appBar: AppBar(
+      //   title: Text(dataProduct.title),
+      // ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 250,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(dataProduct.title),
+              background: Container(
+                height: 250,
+                width: double.infinity,
+                child: Hero(
+                  tag: dataProduct.id,
+                  child: Image.network(
+                    dataProduct.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              SizedBox(
+                height: 10,
+              ),
 
-            SizedBox(
-              height: 10,
-            ),
+              // Harga Produk
+              Text(
+                "\$${dataProduct.price}",
+                style: TextStyle(color: Colors.grey, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
 
-            // Harga Produk
-            Text(
-              "\$${dataProduct.price}",
-              style: TextStyle(color: Colors.grey, fontSize: 20),
-            ),
+              SizedBox(height: 10),
 
-            SizedBox(height: 10),
-
-            // Deskripsi Produk
-            Text(
-              dataProduct.description,
-            )
-          ],
-        ),
+              // Deskripsi Produk
+              Text(
+                dataProduct.description,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 800,),
+            ]),
+          )
+        ],
       ),
     );
   }
