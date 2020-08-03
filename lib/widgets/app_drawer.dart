@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../screens/order_screen.dart';
 import '../screens/user_product_screen.dart';
 import '../providers/auth_provider.dart';
+import '../helpers/custom_page_route.dart';
 
 class AppDrawers extends StatelessWidget {
   @override
@@ -43,8 +44,13 @@ class AppDrawers extends StatelessWidget {
             leading: Icon(Icons.edit),
             title: Text('Manage Products'),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(UserProductsScreen.routeName);
+              // Navigator.of(context)
+              //     .pushReplacementNamed(UserProductsScreen.routeName);
+
+              Navigator.of(context).pushReplacement(
+                CustomPageRoute(builder: (ctx) => UserProductsScreen()),
+              );
+              
             },
           ),
 
