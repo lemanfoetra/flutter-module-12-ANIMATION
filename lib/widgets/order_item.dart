@@ -16,34 +16,41 @@ class _OrderItemState extends State<OrderItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(top: 10),
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text("\$${widget.order.amount} "),
-            subtitle: Text(
-              DateFormat('mm-dd-yyyy (hh:mm:ss)')
-                  .format(widget.order.time)
-                  .toString(),
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      height: isExpanded
+          ? (60 * widget.order.chartItem.length).toDouble() + 90
+          : 90,
+      child: Card(
+        margin: EdgeInsets.only(top: 10),
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text("\$${widget.order.amount} "),
+              subtitle: Text(
+                DateFormat('mm-dd-yyyy (hh:mm)')
+                    .format(widget.order.time)
+                    .toString(),
+              ),
+              trailing: IconButton(
+                icon: isExpanded
+                    ? Icon(Icons.expand_less)
+                    : Icon(Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+              ),
             ),
-            trailing: IconButton(
-              icon: isExpanded
-                  ? Icon(Icons.expand_less)
-                  : Icon(Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  isExpanded = !isExpanded;
-                });
-              },
-            ),
-          ),
 
-          // Detail Product in cart
-          if (isExpanded)
-            Container(
+            // Detail Product in cart
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: isExpanded
+                  ? (60 * widget.order.chartItem.length).toDouble()
+                  : 0,
               padding: EdgeInsets.only(left: 30),
-              height: (80 * widget.order.chartItem.length).toDouble(),
               child: ListView.builder(
                 itemCount: widget.order.chartItem.length,
                 itemBuilder: (ctx, i) {
@@ -62,9 +69,8 @@ class _OrderItemState extends State<OrderItem> {
                 },
               ),
             ),
-
-
-        ],
+          ],
+        ),
       ),
     );
   }
