@@ -11,6 +11,7 @@ import './providers/product_provider.dart';
 import './providers/chart_provider.dart';
 import './providers/orders_provider.dart';
 import './providers/auth_provider.dart';
+import './helpers/custom_page_transition_builder.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,7 +29,6 @@ class MyApp extends StatelessWidget {
           create: null,
           update: (ctx, authObj, productObj) =>
               ProductsProvider(authObj.idToken, authObj.idUser),
-          
         ),
         ChangeNotifierProvider.value(
           value: ChartProvider(),
