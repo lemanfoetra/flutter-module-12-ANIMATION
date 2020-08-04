@@ -10,7 +10,6 @@ class CustomPageTransitionBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    print('CustomPageTransitionBuilder');
     if (route.settings.isInitialRoute) {
       return child;
     }

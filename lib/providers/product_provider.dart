@@ -22,27 +22,29 @@ class ProductsProvider with ChangeNotifier {
 
   // GET DATA DARI FIREBASE
   Future<void> getListProduct([bool filterUser = false]) async {
-
     String strFilter = "";
-    if(filterUser){
+    if (filterUser) {
       strFilter = '&orderBy="creatorId"&equalTo="$userId"';
     }
     String url =
         "https://flutter-shopapps.firebaseio.com/product.json?auth=$authToken$strFilter";
 
     try {
-
       // Mengambil data product
       final response = await http.get(url);
       final ekstrakData = json.decode(response.body) as Map<String, dynamic>;
 
-      // mengambil data user favoriteStatus berdasarkan userId
-      url = "https://flutter-shopapps.firebaseio.com/productFavorite/$userId.json?auth=$authToken";
-      final responseSfavorite = await http.get(url);
-      final dataStatusFavorite = json.decode(responseSfavorite.body) as Map<String, dynamic>;
 
-      if(dataStatusFavorite['error'] != null){
-        throw dataStatusFavorite['error'];
+      // mengambil data user favoriteStatus berdasarkan userId
+      url =
+          "https://flutter-shopapps.firebaseio.com/productFavorite/$userId.json?auth=$authToken";
+      final responseSfavorite = await http.get(url);
+      final dataStatusFavorite =
+          json.decode(responseSfavorite.body) as Map<String, dynamic>;
+      if (dataStatusFavorite != null) {
+        if (dataStatusFavorite['error'] != null) {
+          throw dataStatusFavorite['error'];
+        }
       }
 
       List<Product> newData = [];
@@ -54,7 +56,11 @@ class ProductsProvider with ChangeNotifier {
             imageUrl: value['imageUrl'],
             price: value['price'],
             title: value['title'],
-            isFavorite: (dataStatusFavorite == null) ? false : (dataStatusFavorite[key] == null) ? false : dataStatusFavorite[key]['isFavorite'],
+            isFavorite: (dataStatusFavorite == null)
+                ? false
+                : (dataStatusFavorite[key] == null)
+                    ? false
+                    : dataStatusFavorite[key]['isFavorite'],
           ));
         });
       }
@@ -67,7 +73,8 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     // contoh melakukan post request
-    final url = "https://flutter-shopapps.firebaseio.com/product.json?auth=$authToken";
+    final url =
+        "https://flutter-shopapps.firebaseio.com/product.json?auth=$authToken";
 
     try {
       final response = await http.post(
@@ -104,7 +111,8 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> editProduct(String id, Product product) async {
     if (id != null) {
-      final url = "https://flutter-shopapps.firebaseio.com/product/$id.json?auth=$authToken";
+      final url =
+          "https://flutter-shopapps.firebaseio.com/product/$id.json?auth=$authToken";
       await http.patch(
         url,
         body: json.encode({
@@ -122,7 +130,8 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     try {
-      final url = "https://flutter-shopapps.firebaseio.com/product/$id.json?auth=$authToken";
+      final url =
+          "https://flutter-shopapps.firebaseio.com/product/$id.json?auth=$authToken";
       final response = await http.delete(url);
       if (response.statusCode >= 400) {
         throw "Deleting failed, code : ${response.statusCode}";
